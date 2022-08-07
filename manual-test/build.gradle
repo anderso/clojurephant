@@ -15,6 +15,14 @@ repositories {
     name = 'clojars'
     url = 'https://repo.clojars.org'
   }
+  // TODO package tooling API into the clojurephant tooling JAR
+  maven {
+    name = 'gradle-libs'
+    url = 'https://repo.gradle.org/gradle/libs-releases'
+    content {
+      includeGroup 'org.gradle'
+    }
+  }
 }
 
 dependencies {
@@ -36,8 +44,13 @@ dependencies {
   implementation 'com.stuartsierra:component:1.1.0'
   devImplementation 'com.stuartsierra:component.repl:0.2.0'
 
+  // tooling
+  devImplementation 'dev.clojurephant:clojurephant-tooling:0.1.0'
+  devImplementation 'cider:piggieback:0.5.3'
+
   // figwheel
   devImplementation 'com.bhauman:figwheel-repl:0.2.18'
+  devImplementation 'com.bhauman:figwheel-main:0.2.18'
   devImplementation 'ring:ring-jetty-adapter:1.9.5'
 }
 
@@ -74,8 +87,12 @@ clojurescript {
       compiler {
         optimizations = 'none'
         sourceMap = true
-        preloads = ['sample.dev']
+        // preloads = ['sample.dev']
       }
     }
   }
+}
+
+tasks.named('clojureRepl') {
+  middleware.add('cider.piggieback/wrap-cljs-repl')
 }
